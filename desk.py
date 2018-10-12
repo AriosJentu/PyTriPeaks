@@ -74,16 +74,15 @@ class CardDesk:
 		#Update current card and desk
 		self.bring(self.__desk[lines_count - line][position-1])
 		self.__desk[lines_count - line][position-1] = 0
-		self.__desk = rules.refresh_desk(self.__desk)
+		self.__desk = rules.refresh_desk_by_position(self.__desk, lines_count - line, position - 1)
 
 
 	#Function to check - is desk empty
 	def is_desk_empty(self):
 
 		is_empty = True
-		for i in self.__desk:
-			for j in i:
-				if j != 0:
-					is_empty = False
+		for i in self.__desk[0]:
+			if i != 0:
+				is_empty = False
 
 		return is_empty
