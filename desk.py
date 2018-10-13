@@ -1,4 +1,4 @@
-from cards import Deck
+import cards
 import rules
 
 #Class Of Desk with Cards
@@ -13,7 +13,7 @@ class CardDesk:
 	]
 
 	#Initialization desk with deck of cards
-	def __init__(self, deck=Deck(True)):
+	def __init__(self, deck=cards.Deck(True)):
 
 		#Copy desk list
 		carddesk = [i.copy() for i in CardDesk.__desktype]
@@ -37,8 +37,12 @@ class CardDesk:
 
 	#Bring card to current
 	def bring(self, card):
-		if not card.is_hidden() and rules.is_available_to_bring_card(self.__current_card, card):
+
+		if (not card.is_hidden() and 
+				rules.is_available_to_bring_card(self.__current_card, card)):
+
 			self.__current_card = card
+
 		else:
 			raise Exception("Unable to bring this card by game rules")
 
@@ -50,31 +54,51 @@ class CardDesk:
 	def get_deck(self):
 		return self.__deck.get_deck()
 
+	def get_deck_size(self):
+		return self.__deck.get_deck_size()
+
 	def get_desk(self):
 		return self.__desk
+
+	def get_available_cards_coordinates(self):
+		return rules.get_desk_available_cards_coords(self.__desk)
+
 
 
 	def pop_card_from_deck(self):
 		self.__current_card = self.__deck.pop_card()
 
-	#Pop card from current desk, notice - line and position starts from 1, line from bottom to top
-	def pop_card_from_desk(self, line, position):
+	#Pop card from current desk, notice - line and position starts from 1,
+	# line from bottom to top
+	def pop_card_from_desk(self, line, position, callback=cards.empty_func):
 
 		#Count of lines
 		lines_count = len(CardDesk.__desktype)
 
 		#Check position for correctness
-		if not (0 <= lines_count-line < lines_count and 0 <= position-1 < len(CardDesk.__desktype[lines_count-line])):
+		if not (0 <= lines_count-line < lines_count and 
+				0 <= position-1 < len(CardDesk.__desktype[lines_count-line])):
+
 			raise Exception("Desk Card Position wrong")
 
+
 		#Check for availablety of current position
-		if self.__desk[lines_count - line][position-1] == 0 or self.__desk[lines_count - line][position-1].is_hidden():
+		if (self.__desk[lines_count - line][position-1] == 0 or 
+				self.__desk[lines_count - line][position-1].is_hidden()):
+
 			raise Exception("This position is unable")
+
 
 		#Update current card and desk
 		self.bring(self.__desk[lines_count - line][position-1])
 		self.__desk[lines_count - line][position-1] = 0
-		self.__desk = rules.refresh_desk_by_position(self.__desk, lines_count - line, position - 1)
+
+		self.__desk = rules.refresh_desk_by_position(
+			self.__desk, 
+			lines_count - line, 
+			position - 1,
+			callback
+		)
 
 
 	#Function to check - is desk empty
@@ -86,3 +110,25 @@ class CardDesk:
 				is_empty = False
 
 		return is_empty
+
+"""
+def nx(a, b):
+	print("POSITIONS:", a, b)
+
+x = CardDesk(cards.Deck(False))
+
+x.pop_card_from_desk(1, 10, nx)
+x.pop_card_from_desk(1, 6, nx)
+x.pop_card_from_desk(1, 9, nx)
+
+for k, i in enumerate(x.get_desk()):
+	for v, j in enumerate(i):
+		if type(j) != int:
+			print(4-k, v+1, j, "\t", j.is_hidden())
+		else:
+			print(4-k, v+1, j)
+
+	print()
+
+print(x.get_current_card(), x.get_current_card().is_hidden())
+"""

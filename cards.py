@@ -1,5 +1,8 @@
 from random import shuffle
 
+def empty_func(*a):
+	pass
+
 #Class of Suit of card
 class Suit: 
 
@@ -52,7 +55,11 @@ class Card:
 
 		#Checking for correctness Card Index
 		if index not in ["J", "Q", "K", "A"] and not (1 <= int(index) <= 13):
-			raise Exception("Index should be between 1 and 13 or can be J, K, Q or A")
+
+			raise Exception(
+				"Index should be between 1 and 13 or can be J, K, Q or A"
+			)
+
 
 		#Checking for correctness Suit
 		if type(suit) != Suit:
