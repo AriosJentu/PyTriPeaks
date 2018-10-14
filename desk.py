@@ -39,7 +39,8 @@ class CardDesk:
 	def bring(self, card):
 
 		if (not card.is_hidden() and 
-				rules.is_available_to_bring_card(self.__current_card, card)):
+				rules.is_available_to_bring_card(self.__current_card, card)
+		):
 
 			self.__current_card = card
 
@@ -77,14 +78,16 @@ class CardDesk:
 
 		#Check position for correctness
 		if not (0 <= lines_count-line < lines_count and 
-				0 <= position-1 < len(CardDesk.__desktype[lines_count-line])):
+				0 <= position-1 < len(CardDesk.__desktype[lines_count-line])
+		):
 
 			raise Exception("Desk Card Position wrong")
 
 
 		#Check for availablety of current position
 		if (self.__desk[lines_count - line][position-1] == 0 or 
-				self.__desk[lines_count - line][position-1].is_hidden()):
+				self.__desk[lines_count - line][position-1].is_hidden()
+		):
 
 			raise Exception("This position is unable")
 
