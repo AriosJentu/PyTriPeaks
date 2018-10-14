@@ -66,7 +66,8 @@ def refresh_desk_by_position(deskarray, real_line, real_pos,
 	if (real_line <= 0 
 			or real_line > 3 
 			or real_pos < 0 
-			or real_pos > len(deskarray[real_line])):
+			or real_pos > len(deskarray[real_line])
+	):
 		return deskarray
 
 	#With right-side element

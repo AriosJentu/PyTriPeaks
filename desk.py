@@ -64,6 +64,16 @@ class CardDesk:
 	def get_available_cards_coordinates(self):
 		return rules.get_desk_available_cards_coords(self.__desk)
 
+	def get_available_cards_count(self):
+		
+		cnt = 0
+
+		for i in self.__desk:
+			for j in i:
+				if j != 0 and not j.is_hidden():
+					cnt += 1
+
+		return cnt
 
 
 	def pop_card_from_deck(self):
@@ -114,6 +124,7 @@ class CardDesk:
 
 		return is_empty
 
+
 """
 def nx(a, b):
 	print("POSITIONS:", a, b)
@@ -127,7 +138,7 @@ x.pop_card_from_desk(1, 9, nx)
 for k, i in enumerate(x.get_desk()):
 	for v, j in enumerate(i):
 		if type(j) != int:
-			print(4-k, v+1, j, "\t", j.is_hidden())
+			print(4-k, v+1, "'"+str(j)+"'", "\t", j.is_hidden())
 		else:
 			print(4-k, v+1, j)
 

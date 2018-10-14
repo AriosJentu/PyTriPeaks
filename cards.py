@@ -9,10 +9,10 @@ class Suit:
 	#Dict with information of suits 
 	#Styles like Suits[char_index] containing Full Name and Color
 	__suits = {
-		"c":["Clubs", 		"Black"],
-		"s":["Spades", 		"Black"],
-		"d":["Diamonds", 	"Red"], 
-		"h":["Hearts", 		"Red"]
+		"c":["Clubs", 		"Black",	"♣"],
+		"s":["Spades", 		"Black",	"♠"],
+		"d":["Diamonds", 	"Red",		"♦"], 
+		"h":["Hearts", 		"Red",		"♥"]
 	}
 
 	#initialization with char index of suit
@@ -26,6 +26,7 @@ class Suit:
 		self.__index = suitstr
 		self.__name = self.__suits[suitstr][0]
 		self.__color = self.__suits[suitstr][1]
+		self.__char = self.__suits[suitstr][2]
 
 	#Converting Class Object to string with basic information 
 	def __str__(self):
@@ -41,6 +42,9 @@ class Suit:
 
 	def get_index(self):
 		return self.__index
+
+	def get_char(self):
+		return self.__char
 
 	#Static method for getting Suit dictionary
 	@staticmethod
@@ -83,8 +87,11 @@ class Card:
 
 
 	#Converting Class Object to string with basic information 
-	def __str__(self):
+	def str(self):
 		return "Card - "+str(self.__name)+"; "+str(self.__suit)
+
+	def __str__(self):
+		return "%2s"%self.__name+self.__suit.get_char()
 
 
 	#Setters
