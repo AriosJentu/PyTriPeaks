@@ -167,3 +167,4 @@ class Deck:
 		card.set_hidden(True)
 		self.__cards.append(card)
 		self.__cards_count += 1
+		

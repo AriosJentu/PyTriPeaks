@@ -158,7 +158,18 @@ def key_search():
 
 		#Undo move
 		if key == ord('z'):
-			current_desk.undo_move()
+			try:
+				current_desk.undo_move()
+			except:
+				pass
+
+		#Generate new Field
+		elif key == ord('n'):
+			current_desk.generate(cards.Deck(True))
+
+		#Regenerate current Field
+		elif key == ord('m'):
+			current_desk.regenerate()
 
 		#Change Levels
 		elif key == curses.KEY_UP:

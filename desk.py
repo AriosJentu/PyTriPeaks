@@ -13,7 +13,7 @@ class CardDesk:
 	]
 
 	#Initialization desk with deck of cards
-	def __init__(self, deck=cards.Deck(True)):
+	def __init__(self, gen_deck=cards.Deck(True)):
 
 		#Copy desk list
 		carddesk = [i.copy() for i in CardDesk.__desktype]
@@ -21,20 +21,28 @@ class CardDesk:
 		#Push cards from deck to desk
 		for i, v in enumerate(carddesk):
 			for j, _ in enumerate(v):
-				carddesk[i][j] = deck.pop_card()
+				carddesk[i][j] = gen_deck.pop_card()
 
 		#Show front available cards
 		for k in carddesk[-1]:
 			k.set_hidden(False)
 
 		#Desk Properties
-		self.__current_card = deck.pop_card()
-		self.__deck = deck
+		self.__current_card = gen_deck.pop_card()
+		self.__deck = gen_deck
 		self.__desk = carddesk
 		self.__states = []
 
+		self.__saved_deck = gen_deck
+
 		self.__current_card.set_hidden(False)
 
+	def generate(self, gen_deck=cards.Deck(True)):
+		self.__init__(gen_deck)
+
+	def regenerate(self):
+		while len(self.__states) != 0:
+			self.undo_move()
 
 	#Bring card to current
 	def bring(self, card, from_deck=False):
@@ -47,7 +55,6 @@ class CardDesk:
 			self.__current_card = card
 
 		else:
-			print("WRONG")
 			raise Exception("Unable to bring this card by game rules")
 
 

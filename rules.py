@@ -166,3 +166,4 @@ def get_desk_available_cards_coords(deskarray):
 
 	#Return found coords
 	return coords
+	
