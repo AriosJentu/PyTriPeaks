@@ -38,9 +38,19 @@ def refresh_desk(deskarray, callback=cards.empty_func):
 
 
 #Subfunction to calculate in one iteration for 2 card positions
-def refresh_subfunction(deskarray, line, pos, callback=cards.empty_func):
+def refresh_subfunction(deskarray, line, pos, 
+		callback=cards.empty_func, undo_event=False):
 
-	if deskarray[line][pos] == deskarray[line][pos+1] == 0:
+	#Default condition for event on click card from desk
+	condition = (deskarray[line][pos] == deskarray[line][pos+1] == 0)
+	hidden = False
+
+	#If undo, hide cards at object locations
+	if undo_event:
+		condition = (deskarray[line][pos] != deskarray[line][pos+1])
+		hidden = True
+
+	if condition:
 
 		if line == 3 or (pos+1)%(line+1) != 0:
 
@@ -53,7 +63,7 @@ def refresh_subfunction(deskarray, line, pos, callback=cards.empty_func):
 			
 			if type(deskarray[line-1][k]) != int:
 				
-				deskarray[line-1][k].set_hidden(False)
+				deskarray[line-1][k].set_hidden(hidden)
 				callback(line-1, k)
 			
 	return deskarray
@@ -61,7 +71,7 @@ def refresh_subfunction(deskarray, line, pos, callback=cards.empty_func):
 
 #Function to calculate desk updates by card position
 def refresh_desk_by_position(deskarray, real_line, real_pos, 
-		callback=cards.empty_func):
+		callback=cards.empty_func, undo_event=False):
 
 	if (real_line <= 0 
 			or real_line > 3 
@@ -74,14 +84,14 @@ def refresh_desk_by_position(deskarray, real_line, real_pos,
 	if real_pos+1 < len(deskarray[real_line]):
 
 		deskarray = refresh_subfunction(deskarray, real_line, real_pos, 
-			callback
+			callback, undo_event
 		)
 
 	#With left-side element
 	if real_pos-1 >= 0:
 
 		deskarray = refresh_subfunction(deskarray, real_line, real_pos-1, 
-			callback
+			callback, undo_event
 		)
 
 	return deskarray
@@ -91,11 +101,11 @@ def get_desk_available_cards_coords(deskarray):
 
 	coords = []
 
-	#  TETRAGON (PEAKS)  #
-	#   /\----/\----/\   #
-	#  /\/\--/\/\--/\/\  #
-	# /\/\/\/\/\/\/\/\/\ #
-	#/\/\/\/\/\/\/\/\/\/\#
+	#   TETRAGON (PEAKS)   #
+	#    /\----/\----/\    #
+	#   /\/\--/\/\--/\/\   #
+	#  /\/\/\/\/\/\/\/\/\  #
+	# /\/\/\/\/\/\/\/\/\/\ #
 
 	#Current enabled cursor position
 	i = len(deskarray)-1	#Current Line
@@ -156,17 +166,3 @@ def get_desk_available_cards_coords(deskarray):
 
 	#Return found coords
 	return coords
-
-
-"""
-tab = [
-	[      2,          2,          2      ],
-	[    2,  2,      2,  2,      2,  2    ],
-	[  2,  2,  2,  2,  2,  2,  2,  2,  2  ],
-	[0,  1,  1,  1,  1,  1,  1,  1,  1,  1]
-]
-s = get_desk_available_cards_coords(tab)
-for i in s:
-	print(i)
-
-"""

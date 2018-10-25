@@ -149,9 +149,6 @@ def key_search():
 	desk_pos = 0
 	menu_pos = 0
 
-	y, x = 0, 0
-
-
 	#Infinity key calculation, while not exit
 	available_count = current_desk.get_available_cards_count()
 	while key != ord('q'):
@@ -159,8 +156,12 @@ def key_search():
 		#Get pressed key
 		key = game_screen.getch()
 
+		#Undo move
+		if key == ord('z'):
+			current_desk.undo_move()
+
 		#Change Levels
-		if key == curses.KEY_UP:
+		elif key == curses.KEY_UP:
 			cursor_level = max(0, cursor_level-1)
 
 		elif key == curses.KEY_DOWN:
@@ -189,9 +190,12 @@ def key_search():
 			#For level 0 - pop selected card from desk
 			if cursor_level == 0:
 
-				y, x = get_card_coords_by_desk_index(current_desk, desk_pos, True)
+				coords = get_card_coords_by_desk_index(current_desk, desk_pos, 
+						True
+				)
+
 				try:
-					current_desk.pop_card_from_desk(y, x)
+					current_desk.pop_card_from_desk(*coords)
 				except:
 					pass
 

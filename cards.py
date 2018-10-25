@@ -151,8 +151,19 @@ class Deck:
 		self.__cards_count -= 1
 		return self.__cards.pop()
 
+
 	def get_deck(self):
 		return self.__cards
 
 	def get_deck_size(self):
 		return self.__cards_count
+
+
+	def _push_card_to_deck(self, card):
+		
+		if type(card) != Card:
+			raise Exception("Trying to push non-card object to deck")
+
+		card.set_hidden(True)
+		self.__cards.append(card)
+		self.__cards_count += 1
