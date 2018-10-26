@@ -82,8 +82,41 @@ class CardDesk:
 					cnt += 1
 
 		return cnt
+		
+
+	#Function to get available card moves for current (HINTS)
+	def get_cards_to_hint(self):
+
+		#--------------------------------------------------------------
+		#--------------------------------------------------------------
+		#TODO----------------------------------------------------------
+		#--------------------------------------------------------------
+		#--------------------------------------------------------------
+		
+		pass
+
+	#Function to check - is desk empty (is game finished)
+	def is_game_finished(self):
+
+		for i in self.__desk[0]:
+			if i != 0:
+				return False
+
+		return True
+
+	#Function to get - is game lost
+	def is_game_lost(self):
+
+		#--------------------------------------------------------------
+		#--------------------------------------------------------------
+		#TODO----------------------------------------------------------
+		#--------------------------------------------------------------
+		#--------------------------------------------------------------
+
+		pass
 
 
+	#Function to pop card from deck
 	def pop_card_from_deck(self):
 
 		prev_card = self.__current_card
@@ -129,6 +162,7 @@ class CardDesk:
 		self.bring(self.__desk[lines_count - line][position-1])
 		self.__desk[lines_count - line][position-1] = 0
 
+
 		#Save state of card to be abled to undo move
 		self.__states.append([
 			self.__current_card, 
@@ -145,6 +179,9 @@ class CardDesk:
 			callback
 		)
 
+
+	#This function should be called only inside game classes, like Card, Suit, Deck and CardDesk
+	#Function to push card on desk from stack of states
 	def _push_card_to_desk(self, card, line, position, cbf=cards.empty_func):
 
 		#Count of lines
@@ -166,7 +203,10 @@ class CardDesk:
 				str(position-1)
 			)
 
+
+		#Push this card on desk
 		self.__desk[lines_count - line][position-1] = card
+
 
 		#Refresh desk by popt card
 		self.__desk = rules.refresh_desk_by_position(
@@ -174,19 +214,8 @@ class CardDesk:
 			lines_count - line, 
 			position - 1,
 			cbf,
-			True
+			True		#for pushing
 		)
-
-	#Function to check - is desk empty
-	def is_desk_empty(self):
-
-		is_empty = True
-		for i in self.__desk[0]:
-			if i != 0:
-				is_empty = False
-
-		return is_empty
-
 
 	#function to undo last move
 	def undo_move(self):
@@ -195,6 +224,7 @@ class CardDesk:
 		if len(self.__states) == 0:
 			raise Exception("Nothing to undo")
 
+		#Get card information from states
 		card_values = self.__states.pop()
 
 		#If card from deck

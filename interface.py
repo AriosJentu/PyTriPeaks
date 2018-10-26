@@ -15,7 +15,7 @@ cards_positions = [
 game_menu = [
 	("New Game", [Y+14, X+1]),
 	("Undo Move", [Y+14, X+11]),
-	("Redeal", [Y+14, X+22]),
+	("Reload", [Y+14, X+22]),
 	("Help", [Y+14, X+30]),
 	("Quit", [Y+14, X+36]),
 ]
@@ -176,6 +176,7 @@ def draw_desk(carddesk=current_desk,
 
 	elif level == 2:
 
+		#Game menu selected item
 		item = game_menu[menu_pos]
 
 		game_screen.addstr(*item[1], item[0], 
@@ -286,7 +287,7 @@ def key_search():
 					except:
 						pass
 
-				#Redeal
+				#Reload current desk from start
 				elif menu_pos == 2:
 					current_desk.regenerate()
 
@@ -297,7 +298,6 @@ def key_search():
 				#Quit
 				elif menu_pos == 4:
 					key = ord('q')
-
 
 
 

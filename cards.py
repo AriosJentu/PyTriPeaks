@@ -141,6 +141,12 @@ class Deck:
 
 
 	#Getters
+	def get_deck(self):
+		return self.__cards
+
+	def get_deck_size(self):
+		return self.__cards_count
+
 
 	#Getting last card from deck
 	def pop_card(self):
@@ -151,14 +157,8 @@ class Deck:
 		self.__cards_count -= 1
 		return self.__cards.pop()
 
-
-	def get_deck(self):
-		return self.__cards
-
-	def get_deck_size(self):
-		return self.__cards_count
-
-
+	#This function should be called only inside game classes, like Card, Suit, Deck and CardDesk
+	#Function to push card to deck from stack of states
 	def _push_card_to_deck(self, card):
 		
 		if type(card) != Card:
