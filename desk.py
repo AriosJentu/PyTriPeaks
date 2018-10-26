@@ -33,8 +33,6 @@ class CardDesk:
 		self.__desk = carddesk
 		self.__states = []
 
-		self.__saved_deck = gen_deck
-
 		self.__current_card.set_hidden(False)
 
 	def generate(self, gen_deck=cards.Deck(True)):

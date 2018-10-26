@@ -2,22 +2,35 @@ import curses
 import cards
 import desk
 
+X = 0
+Y = 0
+
 cards_positions = [
-	[1, 	       7,             19,            31       ],
-	[3, 	     5,   9,        17,  21,       29,  33    ],
-	[5, 	  3,   7,   11,  15,  19,  23,  27,  31,  35  ],
-	[7, 	1,   5,   9,  13,  17,  21,  25,  29,  33,  37]	
+	[Y+2, 	       X+7,             X+19,             X+31         ],
+	[Y+4, 	     X+5, X+9,       X+17, X+21,       X+29, X+33      ],
+	[Y+6, 	  X+3, X+7, X+11, X+15, X+19, X+23, X+27, X+31, X+35   ],
+	[Y+8, 	X+1, X+5, X+9, X+13, X+17, X+21, X+25, X+29, X+33, X+37]	
+]
+
+game_menu = [
+	("New Game", [Y+14, X+1]),
+	("Undo Move", [Y+14, X+11]),
+	("Redeal", [Y+14, X+22]),
+	("Help", [Y+14, X+30]),
+	("Quit", [Y+14, X+36]),
 ]
 
 #Decl Cards Positions: for current card, and for deck list
-deck_card_pos = [10, 6]
-deck_side_pos = [10, 12]
+deck_card_pos = [Y+11, X+6]
+deck_side_pos = [Y+11, X+12]
+
 
 #Color definition
 CARD_DEFAULT_COLOR = 1
 CARD_SELECTED_COLOR = 2
 CARD_RED_COLOR = 3
 CARD_BLACK_COLOR = 4
+CARD_HELP_COLOR = 5
 
 #Current desk
 current_desk = desk.CardDesk(cards.Deck(True))
@@ -40,7 +53,8 @@ def get_card_coords_by_desk_index(desk=current_desk, index=0, real=False):
 
 
 #Drawing deck function
-def draw_desk(carddesk=current_desk, level=0, desk_pos=0, menu_pos=0):
+def draw_desk(carddesk=current_desk, 
+		level=0, desk_pos=0, menu_pos=0, help_menu=False):
 
 	#Clear game screen
 	game_screen.clear()
@@ -82,6 +96,31 @@ def draw_desk(carddesk=current_desk, level=0, desk_pos=0, menu_pos=0):
 	game_screen.addstr(*deck_side_pos, "#"*carddesk.get_deck_size(), 
 		curses.color_pair(CARD_DEFAULT_COLOR) | curses.A_BOLD
 	)
+
+	#Draw Menu
+	for i in game_menu:
+
+		game_screen.addstr(*i[1], i[0], 
+			curses.color_pair(CARD_DEFAULT_COLOR) | curses.A_BOLD
+		)
+
+	if help_menu:
+
+		game_screen.addstr(Y+1, X+4,
+			"Select card, to push it to current",
+			curses.color_pair(CARD_HELP_COLOR) | curses.A_ITALIC
+		)
+
+		game_screen.addstr(deck_card_pos[0]-1, deck_card_pos[1]-1,
+			"Press here to get card from deck",
+			curses.color_pair(CARD_HELP_COLOR) | curses.A_ITALIC
+		)
+
+		game_screen.addstr(game_menu[0][1][0]-1, X+16,
+			"Game Menu",
+			curses.color_pair(CARD_HELP_COLOR) | curses.A_ITALIC
+		)
+
 
 	#Colorization cursor
 	#Levels - vertical cursor position, Positions - horizontal cursor positions
@@ -136,8 +175,13 @@ def draw_desk(carddesk=current_desk, level=0, desk_pos=0, menu_pos=0):
 
 
 	elif level == 2:
-		pass
 
+		item = game_menu[menu_pos]
+
+		game_screen.addstr(*item[1], item[0], 
+			curses.color_pair(CARD_SELECTED_COLOR) | 
+			curses.A_ITALIC | curses.A_BOLD
+		)
 
 def key_search():
 
@@ -148,6 +192,7 @@ def key_search():
 	cursor_level = 0
 	desk_pos = 0
 	menu_pos = 0
+	help_menu = False
 
 	#Infinity key calculation, while not exit
 	available_count = current_desk.get_available_cards_count()
@@ -171,6 +216,10 @@ def key_search():
 		elif key == ord('m'):
 			current_desk.regenerate()
 
+		#Showing help menu
+		elif key == ord('h'):
+			help_menu = not help_menu
+
 		#Change Levels
 		elif key == curses.KEY_UP:
 			cursor_level = max(0, cursor_level-1)
@@ -184,10 +233,16 @@ def key_search():
 			if cursor_level == 0:
 				desk_pos = max(0, desk_pos-1)
 
+			elif cursor_level == 2:
+				menu_pos = max(0, menu_pos-1)
+
 		elif key == curses.KEY_RIGHT:
 			
 			if cursor_level == 0:
 				desk_pos += 1
+
+			elif cursor_level == 2:
+				menu_pos += 1
 
 		#Accept key
 		elif (key == curses.KEY_ENTER or 
@@ -217,11 +272,41 @@ def key_search():
 				except:
 					pass
 
+			#For level 2 - main menu
+			elif cursor_level == 2:
+
+				#Start new game
+				if menu_pos == 0:
+					current_desk.generate(cards.Deck(True))
+
+				#Undo move
+				elif menu_pos == 1:
+					try:
+						current_desk.undo_move()
+					except:
+						pass
+
+				#Redeal
+				elif menu_pos == 2:
+					current_desk.regenerate()
+
+				#Help
+				elif menu_pos == 3:
+					help_menu = not help_menu
+
+				#Quit
+				elif menu_pos == 4:
+					key = ord('q')
+
+
+
+
 		#Update counts
 		available_count = current_desk.get_available_cards_count()
 		desk_pos = min(desk_pos, available_count-1)
+		menu_pos = min(menu_pos, len(game_menu)-1)
 		
-		draw_desk(current_desk, cursor_level, desk_pos, menu_pos)
+		draw_desk(current_desk, cursor_level, desk_pos, menu_pos, help_menu)
 
 
 try:
@@ -235,6 +320,7 @@ try:
 	curses.init_pair(CARD_SELECTED_COLOR, curses.COLOR_BLACK, curses.COLOR_WHITE)
 	curses.init_pair(CARD_RED_COLOR, curses.COLOR_WHITE, curses.COLOR_RED)
 	curses.init_pair(CARD_BLACK_COLOR, curses.COLOR_WHITE, curses.COLOR_BLUE)
+	curses.init_pair(CARD_HELP_COLOR, curses.COLOR_WHITE, curses.COLOR_GREEN)
 
 	curses.cbreak()
 	curses.noecho()
@@ -252,4 +338,3 @@ finally:
 	game_screen.keypad(False)
 
 	curses.endwin()
-
